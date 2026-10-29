@@ -21,9 +21,11 @@
 
 package de.the_build_craft.maplink.common;
 
+import de.the_build_craft.maplink.api.MapLinkApi;
 import de.the_build_craft.maplink.common.clientMapHandlers.ClientMapHandler;
 import de.the_build_craft.maplink.common.clientMapHandlers.XaeroClientMapHandler;
 import de.the_build_craft.maplink.common.connections.*;
+import de.the_build_craft.maplink.common.waypoints.PlayerPosition;
 import de.the_build_craft.maplink.common.wrappers.Text;
 import de.the_build_craft.maplink.common.wrappers.Utils;
 import net.minecraft.ChatFormatting;
@@ -162,7 +164,10 @@ public class UpdateTask {
         // Get a list of all player's positions
         try {
             // this must be run no matter if it's activated in the config, to get the "currentDimension" and AFK info
-            FastUpdateTask.getInstance().updateFromOnlineMap(AbstractModInitializer.getConnection().getPlayerPositions());
+            MapConnection connection = AbstractModInitializer.getConnection();
+            HashMap<String, PlayerPosition> playerPositions = connection.getPlayerPositions();
+            FastUpdateTask.getInstance().updateFromOnlineMap(playerPositions);
+            MapLinkApi.publish(playerPositions.values(), connection);
         } catch (Exception e) {
             if (!cantGetPlayerPositionsErrorWasShown){
                 cantGetPlayerPositionsErrorWasShown = true;
@@ -205,6 +210,7 @@ public class UpdateTask {
             AbstractModInitializer.setConnection(null);
             ClientMapHandler.clearRegisteredPositions();
             FastUpdateTask.getInstance().clearAllPlayerPositions();
+            MapLinkApi.clear();
             if (ClientMapHandler.getInstance() != null) ClientMapHandler.getInstance().reset();
             if (XaeroClientMapHandler.xaeroWorldMapSupport != null) XaeroClientMapHandler.xaeroWorldMapSupport.clearTiles();
 

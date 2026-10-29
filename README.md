@@ -55,6 +55,14 @@ _...and then just wait until it's finished :)_
 - Xaero's Minimap and Xaero's Better PvP + Fair Play Versions
 - Xaero's Worldmap
 
+### For mod developers
+Other client mods can read the player positions Map Link gets from the web map, with or without Xaero's mods, through `de.the_build_craft.maplink.api.MapLinkApi`:
+- `isConnected()`: whether Map Link is connected to this server's web map
+- `getWebMapPlayers()`: the players the web map showed at its last update (name, position, web map world, dimension, time of the update), never the local player
+- `getLastUpdateTime()`: when the web map was last read
+
+Map Link is an optional dependency: check that it is loaded before calling it. All methods may be called from any thread.
+
 ### Massive thanks to
 - [ewpratten](https://github.com/ewpratten) for making [RemotePlayers](https://github.com/ewpratten/remoteplayers) which this mod was originally based on
 - [MeerBiene](https://github.com/MeerBiene) for having the idea and helping with the AFK-time formatting
